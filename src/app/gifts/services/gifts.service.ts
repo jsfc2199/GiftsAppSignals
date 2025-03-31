@@ -14,11 +14,11 @@ export class GiftService {
 
   private http = inject(HttpClient);
 
-  trendingGifts = signal<Gift[]>([])
-  trendingGiftsLoading = signal<boolean>(true)
+  trendingGifts = signal<Gift[]>([]);
+  trendingGiftsLoading = signal<boolean>(true);
 
-  searchHistory = signal<Record<string, Gift[]>>({})
-  searchHistoryKeys = computed(() => Object.keys(this.searchHistory()))
+  searchHistory = signal<Record<string, Gift[]>>({});
+  searchHistoryKeys = computed(() => Object.keys(this.searchHistory()));
 
   loadTrendingGifts() {
     return this.http
@@ -29,13 +29,13 @@ export class GiftService {
         },
       })
       .subscribe((resp) => {
-        const gifts = GiftMapper.mapGiphyItemToGiftArray(resp.data)
-        this.trendingGifts.set(gifts)
-        this.trendingGiftsLoading.set(false)
+        const gifts = GiftMapper.mapGiphyItemToGiftArray(resp.data);
+        this.trendingGifts.set(gifts);
+        this.trendingGiftsLoading.set(false);
       });
   }
 
-  searchGifts(query: string){
+  searchGifts(query: string) {
     return this.http
       .get<GiphyReponse>(`${environment.url}/gifs/search`, {
         params: {
@@ -43,17 +43,23 @@ export class GiftService {
           q: query,
           limit: 20,
         },
-      }).pipe(
-        map(resp => {
-          const gifts = GiftMapper.mapGiphyItemToGiftArray(resp.data)
-          return gifts
+      })
+      .pipe(
+        map((resp) => {
+          const gifts = GiftMapper.mapGiphyItemToGiftArray(resp.data);
+          return gifts;
         }),
         tap((items) => {
-          this,this.searchHistory.update((history) => ({
-            ...history,
-            [query.toLowerCase()]: items
-          }))
+          this,
+            this.searchHistory.update((history) => ({
+              ...history,
+              [query.toLowerCase()]: items,
+            }));
         })
-      )
+      );
+  }
+
+  getHistoryGifts(query: string) {
+    return this.searchHistory()[query] ?? [];
   }
 }
