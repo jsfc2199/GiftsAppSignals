@@ -30,4 +30,19 @@ export class GiftService {
         this.trendingGiftsLoading.set(false)
       });
   }
+
+  searchGifts(query: string){
+    return this.http
+      .get<GiphyReponse>(`${environment.url}/gifs/search`, {
+        params: {
+          api_key: environment.apiKey,
+          q: query,
+          limit: 20,
+        },
+      })
+      .subscribe((resp) => {
+        const gifts = GiftMapper.mapGiphyItemToGiftArray(resp.data)
+        console.log(gifts)
+      });
+  }
 }
