@@ -1,23 +1,34 @@
 import { HttpClient } from '@angular/common/http';
-import { computed, inject, Injectable, signal } from '@angular/core';
+import { computed, effect, inject, Injectable, signal } from '@angular/core';
 import { environment } from '@environments/environment';
 import { GiphyReponse } from '../interfaces/giphy.interface';
 import { Gift } from '../interfaces/gift.interface';
 import { GiftMapper } from '../mapper/gift.mapper';
 import { map, tap } from 'rxjs';
 
+const loadFromLocalStorage = () => {
+  const giftFromLocalStorage = localStorage.getItem('gifts') ?? '{}'
+  const gifts = JSON.parse(giftFromLocalStorage)
+
+  return gifts
+}
 @Injectable({ providedIn: 'root' })
 export class GiftService {
   constructor() {
     this.loadTrendingGifts();
   }
 
+  saveGiftsToLocalStorage = effect(() => {
+    const historyString = JSON.stringify(this.searchHistory());
+    localStorage.setItem('gifts', historyString)
+  })
+
   private http = inject(HttpClient);
 
   trendingGifts = signal<Gift[]>([]);
   trendingGiftsLoading = signal<boolean>(true);
 
-  searchHistory = signal<Record<string, Gift[]>>({});
+  searchHistory = signal<Record<string, Gift[]>>(loadFromLocalStorage());
   searchHistoryKeys = computed(() => Object.keys(this.searchHistory()));
 
   loadTrendingGifts() {
