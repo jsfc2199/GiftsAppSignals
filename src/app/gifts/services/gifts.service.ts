@@ -14,6 +14,8 @@ export class GiftService {
   private http = inject(HttpClient);
 
   trendingGifts = signal<Gift[]>([])
+  trendingGiftsLoading = signal<boolean>(true)
+
   loadTrendingGifts() {
     return this.http
       .get<GiphyReponse>(`${environment.url}/gifs/trending`, {
@@ -25,6 +27,7 @@ export class GiftService {
       .subscribe((resp) => {
         const gifts = GiftMapper.mapGiphyItemToGiftArray(resp.data)
         this.trendingGifts.set(gifts)
+        this.trendingGiftsLoading.set(false)
       });
   }
 }

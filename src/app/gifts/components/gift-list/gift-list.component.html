@@ -1,5 +1,5 @@
 <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
   @for (gift of gifts(); track gift) {
-    <app-gift-list-item [imageUrl]="gift"></app-gift-list-item>
+    <app-gift-list-item [imageUrl]="gift.url"></app-gift-list-item>
   }
 </div>
