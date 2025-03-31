@@ -4,6 +4,7 @@ import { environment } from '@environments/environment';
 import { GiphyReponse } from '../interfaces/giphy.interface';
 import { Gift } from '../interfaces/gift.interface';
 import { GiftMapper } from '../mapper/gift.mapper';
+import { map } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class GiftService {
@@ -39,10 +40,11 @@ export class GiftService {
           q: query,
           limit: 20,
         },
-      })
-      .subscribe((resp) => {
-        const gifts = GiftMapper.mapGiphyItemToGiftArray(resp.data)
-        console.log(gifts)
-      });
+      }).pipe(
+        map(resp => {
+          const gifts = GiftMapper.mapGiphyItemToGiftArray(resp.data)
+          return gifts
+        })
+      )
   }
 }
