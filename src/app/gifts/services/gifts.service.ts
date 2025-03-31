@@ -1,7 +1,9 @@
 import { HttpClient } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import { environment } from '@environments/environment';
 import { GiphyReponse } from '../interfaces/giphy.interface';
+import { Gift } from '../interfaces/gift.interface';
+import { GiftMapper } from '../mapper/gift.mapper';
 
 @Injectable({ providedIn: 'root' })
 export class GiftService {
@@ -9,14 +11,20 @@ export class GiftService {
     this.loadTrendingGifts();
   }
 
-  private http = inject(HttpClient)
+  private http = inject(HttpClient);
 
-  loadTrendingGifts(){
-    this.http.get<GiphyReponse>(`${environment.url}/gifs/trending`, {
-      params: {
-        api_key: environment.apiKey,
-        limit: 20,
-      }
-    })
+  trendingGifts = signal<Gift[]>([])
+  loadTrendingGifts() {
+    return this.http
+      .get<GiphyReponse>(`${environment.url}/gifs/trending`, {
+        params: {
+          api_key: environment.apiKey,
+          limit: 20,
+        },
+      })
+      .subscribe((resp) => {
+        const gifts = GiftMapper.mapGiphyItemToGiftArray(resp.data)
+        this.trendingGifts.set(gifts)
+      });
   }
 }

@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { GiftListComponent } from "../../components/gift-list/gift-list.component";
+import { GiftService } from '../../services/gifts.service';
 
 
 @Component({
@@ -22,4 +23,9 @@ export class TrendingPageComponent {
     "https://flowbite.s3.amazonaws.com/docs/gallery/square/image-10.jpg",
     "https://flowbite.s3.amazonaws.com/docs/gallery/square/image-11.jpg"
   ];
+
+  giftsService = inject(GiftService);
+
+
+
 }
