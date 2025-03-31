@@ -14,6 +14,10 @@ export const routes: Routes = [
         loadComponent: () => import('./gifts/pages/search-page/search-page.component').then(c => c.SearchPageComponent)
       },
       {
+        path: 'history/:query', //dinámico
+        loadComponent: () => import('./gifts/pages/gift-history--page/Gift-history.component').then(c => c.GiftHistoryComponent)
+      },
+      {
         path: '**',
         redirectTo: 'trending'
       }
